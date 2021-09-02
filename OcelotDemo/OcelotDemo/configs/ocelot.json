@@ -1,0 +1,65 @@
+{
+  "Routes": [ // ReRoutes是旧版的节点，使用Routes
+    {
+      "UpstreamPathTemplate": "/{urls}", //上游模板(此为万能模板，优先级最低)
+      "UpstreamHttpMethod": [
+        "Get",
+        "Put",
+        "Delete",
+        "Options"
+      ],
+      //"LoadBalancerOptions": { //负载均衡
+      //  "Type": "RoundRobin" //LeastConnection 将请求发往最空闲的那个服务器 RoundRobin 轮流发送 NoLoadBalance 总是发往第一个请求或者是服务发现
+      //  //"Key": "",
+      //  //"Expiry": 0
+      //},
+      "DownstreamPathTemplate": "/{urls}", //下游模板
+      "DownstreamScheme": "http",
+      //"DownstreamHostAndPorts": [
+      //  {
+      //    "Host": "localhost",
+      //    "Port": 7771
+      //  },
+      //  {
+      //    "Host": "localhost",
+      //    "Port": 7772
+      //  }
+      //],
+      //"UseServiceDiscovery": true,//是否使用服务发现
+      "ServiceName": "WebSite"
+/*---------------------------限流---------------------------------*/
+      //"RateLimitOptions": {
+      //  "ClientWhitelist": [], //白名单
+      //  "EnableRateLimiting": true, //是否启用限流
+      //  "Period": "1s", //统计时间段：1s, 5m, 1h, 1d
+      //  "PeriodTimespan": 5, //多少秒之后客户端可以重试
+      //  "Limit": 1 //在统计时间段内允许的最大请求数量
+      //},
+/*---------------------------限流---------------------------------*/
+/*---------------------------熔断---------------------------------*/
+      //"QoSOptions": {
+      //  "ExceptionsAllowedBeforeBreaking": 3,
+      //  "DurationOfBreak": 5,
+      //  "TimeoutValue": 5000
+      //}
+/*---------------------------熔断---------------------------------*/
+    }
+  ],
+  "GlobalConfiguration": {
+    //"BaseUrl": "https://localhost:7770"
+    "ServiceDiscoveryProvider": { //Consul服务的配置
+      "Scheme": "http",
+      "Host": "localhost",
+      "Port": 8500,
+      "ConfigurationKey": "Oceolot_A" //存储在Consul上的Key
+
+    },
+    "RateLimitOptions": { //全局限流相应配置
+      "DisableRateLimitHeaders": false,
+      "QuotaExceededMessage": "Customize Tips!", //限流响应返回信息
+      "HttpStatusCode": 999, //限流返回状态码
+      "ClientIdHeader": "Test" //客户端请求头 默认是 ClientId
+    }
+
+  }
+}
