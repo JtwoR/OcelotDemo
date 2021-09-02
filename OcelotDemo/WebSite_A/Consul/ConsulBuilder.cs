@@ -35,8 +35,8 @@ namespace WebSite_A.Consul
                 Checks = new[] { httpCheck },
                 ID = Guid.NewGuid().ToString(),
                 Name = _serviceName,
-                Address = _consulInfo.IP,
-                Port = _consulInfo.Port,
+                Address = "localhost",
+                Port = 7771,
                // Tags = new[] { $"urlprefix-/{_serviceName}" }//添加 urlprefix-/servicename 格式的 tag 标签，以便 Fabio 识别
             };
 

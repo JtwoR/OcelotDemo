@@ -35,9 +35,9 @@ namespace WebSite_B.Consul
                 Checks = new[] { httpCheck },
                 ID = Guid.NewGuid().ToString(),
                 Name = _serviceName,
-                Address = _consulInfo.IP,
-                Port = _consulInfo.Port,
-               // Tags = new[] { $"urlprefix-/{_serviceName}" }//添加 urlprefix-/servicename 格式的 tag 标签，以便 Fabio 识别
+                Address = "localhost",
+                Port = 7772,
+                // Tags = new[] { $"urlprefix-/{_serviceName}" }//添加 urlprefix-/servicename 格式的 tag 标签，以便 Fabio 识别
             };
 
             consulClient.Agent.ServiceRegister(registration).Wait();//服务启动时注册，内部实现其实就是使用 Consul API 进行注册（HttpClient发起）
