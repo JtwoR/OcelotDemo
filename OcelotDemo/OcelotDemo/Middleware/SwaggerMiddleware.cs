@@ -11,7 +11,7 @@ namespace OcelotDemo.Middleware
 {
     public static class SwaggerMiddleware
     {
-        public static void SetSwaggerOption(this IServiceCollection services) {
+        public static void AddSwagger(this IServiceCollection services) {
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API Demo", Version = "v1" });

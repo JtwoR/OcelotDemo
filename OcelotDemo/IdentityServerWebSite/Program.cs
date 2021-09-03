@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebSite_B
+namespace IdentityServer
 {
     public class Program
     {
@@ -20,7 +20,7 @@ namespace WebSite_B
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseUrls(Consul.ConsulBuilder.siteUrl);
+                    webBuilder.UseUrls("http://localhost:6999");
                     webBuilder.UseStartup<Startup>();
                 });
     }

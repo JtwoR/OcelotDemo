@@ -28,7 +28,13 @@ namespace OcelotDemo
                 option.EnableEndpointRouting = false;
             });
 
-            services.SetSwaggerOption();//≈‰÷√swagger
+            services.AddSwagger();//≈‰÷√swagger
+
+            services.AddAuthentication()
+                    .AddJwtBearer("http",option=> {
+                        option.Authority = "http://localhost:6999";
+                        option.RequireHttpsMetadata = false;
+                    });
 
             services
                 .AddOcelot()
@@ -50,7 +56,7 @@ namespace OcelotDemo
             app.UseSwaggerMiddleware();// π”√swagger
 
             
-
+            
             app.UseMvc();
             app.UseOcelot().Wait();
         }

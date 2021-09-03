@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,10 +10,12 @@ namespace WebSite_A.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
+    
     public class ValuesController : ControllerBase
     {
 
         [HttpGet("Get")]
+        [Authorize]
         public async Task<string> Get() {
             return await Task.FromResult("Get WebSite_A");
         }
