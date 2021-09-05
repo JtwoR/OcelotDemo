@@ -30,11 +30,13 @@ namespace OcelotDemo
 
             services.AddSwagger();//≈‰÷√swagger
 
-            services.AddAuthentication()
-                    .AddJwtBearer("http",option=> {
-                        option.Authority = "http://localhost:6999";
-                        option.RequireHttpsMetadata = false;
-                    });
+            services.AddAuthentication("Bearer")
+              .AddIdentityServerAuthentication(options =>
+              {
+                  options.Authority = "http://localhost:6999";
+                  options.RequireHttpsMetadata = false;
+                  options.ApiName = "WebSite";
+              });
 
             services
                 .AddOcelot()
@@ -54,7 +56,7 @@ namespace OcelotDemo
 
 
             app.UseSwaggerMiddleware();// π”√swagger
-
+            app.UseAuthentication();
             
             
             app.UseMvc();

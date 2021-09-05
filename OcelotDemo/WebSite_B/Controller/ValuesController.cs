@@ -14,7 +14,7 @@ namespace WebSite_B.Controller
     public class ValuesController : ControllerBase
     {
         [HttpGet("Get")]
-        [Authorize]
+       // [Authorize]
         public async Task<string> Get()
         {
             return await Task.FromResult("Get WebSite_B");

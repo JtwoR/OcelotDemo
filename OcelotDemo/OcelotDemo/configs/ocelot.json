@@ -26,7 +26,11 @@
       //  }
       //],
       //"UseServiceDiscovery": true,//是否使用服务发现
-      "ServiceName": "WebSite"
+      "ServiceName": "WebSite",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Gateway",
+        "AllowedScopes": []
+      }
       /*---------------------------限流---------------------------------*/
       //"RateLimitOptions": {
       //  "ClientWhitelist": [], //白名单

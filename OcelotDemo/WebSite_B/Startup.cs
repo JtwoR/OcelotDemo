@@ -28,13 +28,13 @@ namespace WebSite_B
                 client.Address = new Uri("http://localhost:8500");
             }));
 
-            services.AddAuthentication("Bearer")
-                .AddIdentityServerAuthentication(options =>
-                {
-                    options.Authority = "http://localhost:6999";
-                    options.RequireHttpsMetadata = false;
-                    options.ApiName = "WebSite";
-                });
+            //services.AddAuthentication("Bearer")
+            //    .AddIdentityServerAuthentication(options =>
+            //    {
+            //        options.Authority = "http://localhost:6999";
+            //        options.RequireHttpsMetadata = false;
+            //        options.ApiName = "WebSite";
+            //    });
 
         }
 
@@ -52,7 +52,7 @@ namespace WebSite_B
 
 
             app.RegisterConsul(client, lifetime);
-            app.UseAuthentication();
+            //app.UseAuthentication();
             app.UseMvc();
 
 

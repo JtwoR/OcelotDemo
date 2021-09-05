@@ -13,6 +13,9 @@ using Microsoft.EntityFrameworkCore;
 using System.Configuration;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer.IdentityServer;
+using IdentityServer4.EntityFramework.Mappers;
 
 namespace IdentityServer
 {
@@ -33,26 +36,47 @@ namespace IdentityServer
             //    .AddInMemoryApiResources(IdentityServerConfig.ApiResource)
             //    .AddInMemoryApiScopes(IdentityServerConfig.ApiScope);
 
-            var connection = "Server=localhost;Port=3306;User Id=root;Password=123456;Database=identityserver;Max Pool Size = 512;Connect Timeout=600000;charset=utf8mb4;SslMode=None;";
+            var connection = "Server=localhost;Port=3306;User Id=root;Password=123;Database=identityserver;Max Pool Size = 512;Connect Timeout=600000;charset=utf8mb4;SslMode=None;";
 
-            var test=services.AddIdentityServer()
-                .AddDeveloperSigningCredential()//开发环境(证书问题)
-                .AddInMemoryApiResources(new List<ApiResource>() { new ApiResource("WebSite") { } })
-                .AddInMemoryApiScopes(new List<ApiScope>() { new ApiScope("WebSite") { } })
-                .AddConfigurationStore(options =>
-                {
-                    options.ConfigureDbContext = builder =>
-                        builder.UseMySQL(connection,
-                            sql => sql.MigrationsAssembly("IdentityServer"));
-                });
+            //var test=services.AddIdentityServer()
+            //    .AddDeveloperSigningCredential()//开发环境(证书问题)
+            //    .AddInMemoryApiResources(new List<ApiResource>() { new ApiResource("WebSite") { } })
+            //    .AddInMemoryApiScopes(new List<ApiScope>() { new ApiScope("WebSite") { } })
+            //    .AddConfigurationStore(options =>
+            //    {
+            //        options.ConfigureDbContext = builder =>
+            //            builder.UseMySQL(connection,
+            //                sql => sql.MigrationsAssembly("IdentityServer"));
+            //    });
 
 
             //var migrationsAssembly = typeof(Startup).GetType().Assembly.GetName().Name;
-            
+
+            services
+                .AddIdentityServer()
+                .AddDeveloperSigningCredential()
+                .AddConfigurationStore(options =>
+                {
+                    options.ConfigureDbContext = builder =>
+                    {
+                        builder.UseMySQL(connection,
+                            sql => sql.MigrationsAssembly("IdentityServer"));
+                    };
+                })
+           .AddOperationalStore(options =>
+           {
+               options.ConfigureDbContext = builder =>
+               {
+                   builder.UseMySQL(connection,
+                       sql => sql.MigrationsAssembly("IdentityServer"));
+               };
+               options.EnableTokenCleanup = true;
+           });
 
             //Add-Migration InitConfiguration -Context ConfigurationDbContext -o Date\Migrations\IdentityServer\ConfiguragtionDb
             //update-database
             //services.AddIdentityServer()
+            //    .AddDeveloperSigningCredential()
             //    .AddConfigurationStore(opt =>
             //    {
             //        opt.ConfigureDbContext = context =>
@@ -62,6 +86,7 @@ namespace IdentityServer
             //                sql.MigrationsAssembly("IdentityServer");
             //            });
             //        };
+
             //    });
 
 
@@ -112,7 +137,58 @@ namespace IdentityServer
 
             app.UseMvc();
         }
+
+        public void InitIdentityServerDataBase(IApplicationBuilder app)
+        {
+            //ApplicationServices返回的就是IServiceProvider，依赖注入的容器
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                //Update-Database
+                scope.ServiceProvider.GetService<IdentityServer4.EntityFramework.DbContexts.PersistedGrantDbContext>().Database.Migrate();
+
+                //var provide = scope.ServiceProvider.GetService<PersistedGrantDbContext>();
+                //ckk.PersistedGrants.Add(new IdentityServer4.EntityFramework.Entities.PersistedGrant {
+
+                //});
+
+                var configurationDbContext = scope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
+
+                /*
+                 如果不走这个，
+                 那么应该手动执行 Update-Database -Context PersistedGrantDbContext
+                 */
+                configurationDbContext.Database.Migrate();
+
+                if (!configurationDbContext.Clients.Any())
+                {
+                    foreach (var client in IdentityServerConfig.Client)
+                    {
+                        //client.ToEntity() 会把当前实体映射到EF实体
+                        configurationDbContext.Clients.Add(client.ToEntity());
+                    }
+                    configurationDbContext.SaveChanges();
+                }
+                if (!configurationDbContext.ApiResources.Any())
+                {
+                    foreach (var api in IdentityServerConfig.ApiResource)
+                    {
+                        configurationDbContext.ApiResources.Add(api.ToEntity());
+                    }
+                    configurationDbContext.SaveChanges();
+                }
+                if (!configurationDbContext.IdentityResources.Any())
+                {
+                    foreach (var identity in IdentityServerConfig.ApiScope)
+                    {
+                        configurationDbContext.ApiScopes.Add(identity.ToEntity());
+                    }
+                    configurationDbContext.SaveChanges();
+                }
+            }
+        }
     }
+}
+
 
     // 定义用户管理上下文，继承 NetCore 自带的 Identity 认证机制，也可以不继承而自定义表结构。
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
