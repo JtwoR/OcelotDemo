@@ -1,0 +1,151 @@
+{
+  "Routes": [ // ReRoutes是旧版的节点，使用Routes
+    //1、路由模式
+    {
+      "UpstreamPathTemplate": "/api/Route/{urls}", //上游模板
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post",
+        "Put",
+        "Delete",
+        "Options"
+      ],
+      "LoadBalancerOptions": { //负载均衡
+        "Type": "RoundRobin", //LeastConnection 将请求发往最空闲的那个服务器 RoundRobin 轮流发送 NoLoadBalance 总是发往第一个请求或者是服务发现
+        "Key": "",
+        "Expiry": 0
+      },
+      "DownstreamPathTemplate": "/api/Route/{urls}", //下游模板
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "10.0.4.49",
+          "Port": 7771
+        },
+        {
+          "Host": "10.0.4.49",
+          "Port": 7772
+        }
+      ]
+    },
+
+    //2、服务发现模式
+    {
+      "UpstreamPathTemplate": "/api/Consul/{urls}", //上游模板
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post",
+        "Put",
+        "Delete",
+        "Options"
+      ],
+      "LoadBalancerOptions": { //负载均衡
+        "Type": "RoundRobin", //LeastConnection 将请求发往最空闲的那个服务器 RoundRobin 轮流发送 NoLoadBalance 总是发往第一个请求或者是服务发现
+        "Key": "",
+        "Expiry": 0
+      },
+      "DownstreamPathTemplate": "/api/Consul/{urls}", //下游模板
+      "DownstreamScheme": "http",
+      "ServiceName": "ConsulTest",//服务名称
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Gateway",//授权中心key 与注入key需要相同
+        "AllowedScopes": []
+      },
+      /*---------------------------限流---------------------------------*/
+      "RateLimitOptions": {
+        "ClientWhitelist": [], //白名单
+        "EnableRateLimiting": true, //是否启用限流
+        "Period": "1s", //统计时间段：1s, 5m, 1h, 1d
+        "PeriodTimespan": 5, //多少秒之后客户端可以重试
+        "Limit": 1 //在统计时间段内允许的最大请求数量
+      },
+      /*---------------------------限流---------------------------------*/
+      /*---------------------------熔断---------------------------------*/
+      "QoSOptions": {
+        "ExceptionsAllowedBeforeBreaking": 3, //允许多少个异常请求
+        "DurationOfBreak": 5, //熔断的时间，单位为秒
+        "TimeoutValue": 5000 // 如果下游请求的处理时间超过多少则自动将请求设置为超时
+      }
+      /*---------------------------熔断---------------------------------*/
+    },
+
+    //3、请求聚合(只支持http get(需要验证))
+    {
+      "DownstreamPathTemplate": "/api/Aggregator/Get",
+      "UpstreamPathTemplate": "/api/Aggregator/A",
+      "UpstreamHttpMethod": [
+        "Get"
+      ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7771
+        }
+      ],
+      "Key": "A"//聚合子key
+    },
+    {
+      "DownstreamPathTemplate": "/api/Aggregator/Get",
+      "UpstreamPathTemplate": "/api/Aggregator/B",
+      "UpstreamHttpMethod": [
+        "Get"
+      ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7772
+        }
+      ],
+      "Key": "B" //聚合子key
+    },
+
+    //万能模板(优先级最低)
+    {
+      "UpstreamPathTemplate": "/{urls}", //上游模板(此为万能模板，优先级最低)
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post",
+        "Put",
+        "Delete",
+        "Options"
+      ],
+      "LoadBalancerOptions": { //负载均衡
+        "Type": "RoundRobin", //LeastConnection 将请求发往最空闲的那个服务器 RoundRobin 轮流发送 NoLoadBalance 总是发往第一个请求或者是服务发现
+        "Key": "",
+        "Expiry": 0
+      },
+      "DownstreamPathTemplate": "/{urls}", //下游模板
+      "DownstreamScheme": "http",
+      "ServiceName": "ConsulTest"
+    }
+  ],
+  "Aggregates": [
+    {
+      "RouteKeys": [
+        "A",
+        "B"
+      ], //聚合子key
+      "UpstreamPathTemplate": "/all",//上游聚合路由
+      "Aggregator": "FakeDefinedAggregator" //聚合注入的类名
+    }
+  ],
+  "GlobalConfiguration": {
+    //"BaseUrl": "https://localhost:7770"
+    "ServiceDiscoveryProvider": { //Consul服务的配置
+      "Scheme": "http",
+      "Host": "10.0.4.49",
+      "Port": 8500,
+      "ConfigurationKey": "Oceolot_A" //存储在Consul上的Key
+
+    },
+    "RateLimitOptions": { //全局限流相应配置
+      "DisableRateLimitHeaders": false,
+      "QuotaExceededMessage": "Customize Tips!", //限流响应返回信息
+      "HttpStatusCode": 999, //限流返回状态码
+      "ClientIdHeader": "Test" //客户端请求头 默认是 ClientId
+    }
+
+  }
+}
