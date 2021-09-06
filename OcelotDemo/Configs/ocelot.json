@@ -62,7 +62,7 @@
       /*---------------------------限流---------------------------------*/
       /*---------------------------熔断---------------------------------*/
       "QoSOptions": {
-        "ExceptionsAllowedBeforeBreaking": 3, //允许多少个异常请求
+        "ExceptionsAllowedBeforeBreaking": 1, //允许多少个异常请求
         "DurationOfBreak": 5, //熔断的时间，单位为秒
         "TimeoutValue": 5000 // 如果下游请求的处理时间超过多少则自动将请求设置为超时
       }
@@ -142,7 +142,7 @@
     },
     "RateLimitOptions": { //全局限流相应配置
       "DisableRateLimitHeaders": false,
-      "QuotaExceededMessage": "Customize Tips!", //限流响应返回信息
+      "QuotaExceededMessage": "网关异常返回", //限流响应返回信息
       "HttpStatusCode": 999, //限流返回状态码
       "ClientIdHeader": "Test" //客户端请求头 默认是 ClientId
     }

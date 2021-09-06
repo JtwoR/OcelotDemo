@@ -22,5 +22,12 @@ namespace WebSite_B.Controller
         {
             return await Task.FromResult("WebSite_B：/api/Consul/GetWait");
         }
+
+        [HttpGet("Error")]
+        public async Task<string> Error()
+        {
+            throw new Exception("手动异常");
+            return await Task.FromResult("WebSite_A：/api/Consul/GetWait");
+        }
     }
 }
