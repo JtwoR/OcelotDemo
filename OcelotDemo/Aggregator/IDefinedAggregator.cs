@@ -35,7 +35,7 @@ namespace Gateway.Aggregator
 
                 results.Add($"\"{down.Items.DownstreamRequest().ToUri()}\":{content}");
             }
-            //来自leader的声音
+          
             results.Add($"\"master\":\"请求聚合\"");
 
             contentBuilder.Append(string.Join(",", results));

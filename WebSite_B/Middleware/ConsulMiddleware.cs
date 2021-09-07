@@ -26,22 +26,24 @@ namespace WebSite_B.Middleware
                 Timeout = TimeSpan.FromSeconds(5)
             };
 
+            string ID = Guid.NewGuid().ToString();
             // Register service with consul
             var registration = new AgentServiceRegistration()
             {
                 Checks = new[] { httpCheck },
-                ID = Guid.NewGuid().ToString(),
+                ID = ID,
                 Name = _serviceName,
                 Address = Program.siteInfo.Host,
                 Port = Program.siteInfo.Port,
-                // Tags = new[] { $"urlprefix-/{_serviceName}" }//添加 urlprefix-/servicename 格式的 tag 标签，以便 Fabio 识别
+                Tags = new[] { $"WebSite_B" }
             };
 
-            client.Agent.ServiceRegister(registration).Wait();//服务启动时注册，内部实现其实就是使用 Consul API 进行注册（HttpClient发起）
+            client.Agent.ServiceRegister(registration).Wait();//服务启动时注册
             lifetime.ApplicationStopping.Register(() =>
             {
                 client.Agent.ServiceDeregister(registration.ID).Wait();//服务停止时取消注册
             });
+
 
             return app;
         }

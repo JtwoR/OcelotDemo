@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSite_B", "WebSite_B\WebS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer", "IdentityServerWebSite\IdentityServer.csproj", "{06AC7589-A8AA-4584-9C5A-6B56FD7C8EDE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{42B39F4C-EFEE-42D3-919E-C0E59E681036}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csproj", "{42B39F4C-EFEE-42D3-919E-C0E59E681036}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

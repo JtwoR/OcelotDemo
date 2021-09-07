@@ -3,13 +3,14 @@
     //1、路由模式
     {
       "UpstreamPathTemplate": "/api/Route/{urls}", //上游模板
-      "UpstreamHttpMethod": [
+      "UpstreamHttpMethod": [ //上游支持的http请求方式
         "Get",
         "Post",
         "Put",
         "Delete",
         "Options"
       ],
+      "Priority": 0,
       "LoadBalancerOptions": { //负载均衡
         "Type": "RoundRobin", //LeastConnection 将请求发往最空闲的那个服务器 RoundRobin 轮流发送 NoLoadBalance 总是发往第一个请求或者是服务发现
         "Key": "",
@@ -17,13 +18,13 @@
       },
       "DownstreamPathTemplate": "/api/Route/{urls}", //下游模板
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
+      "DownstreamHostAndPorts": [ //下游站点host与端口
         {
-          "Host": "10.0.4.49",
+          "Host": "localhost",
           "Port": 7771
         },
         {
-          "Host": "10.0.4.49",
+          "Host": "localhost",
           "Port": 7772
         }
       ]
@@ -40,9 +41,9 @@
         "Options"
       ],
       "LoadBalancerOptions": { //负载均衡
-        "Type": "RoundRobin", //LeastConnection 将请求发往最空闲的那个服务器 RoundRobin 轮流发送 NoLoadBalance 总是发往第一个请求或者是服务发现
-        "Key": "",
-        "Expiry": 0
+        "Type": "LeastConnection" //LeastConnection 将请求发往最空闲的那个服务器 RoundRobin 轮流发送 NoLoadBalance 总是发往第一个请求或者是服务发现
+        //"Key": "",
+        //"Expiry": 0
       },
       "DownstreamPathTemplate": "/api/Consul/{urls}", //下游模板
       "DownstreamScheme": "http",
@@ -59,8 +60,8 @@
         "PeriodTimespan": 5, //多少秒之后客户端可以重试
         "Limit": 1 //在统计时间段内允许的最大请求数量
       },
-      /*---------------------------限流---------------------------------*/
-      /*---------------------------熔断---------------------------------*/
+      ///*---------------------------限流---------------------------------*/
+      ///*---------------------------熔断---------------------------------*/
       "QoSOptions": {
         "ExceptionsAllowedBeforeBreaking": 1, //允许多少个异常请求
         "DurationOfBreak": 5, //熔断的时间，单位为秒
@@ -112,7 +113,7 @@
         "Options"
       ],
       "LoadBalancerOptions": { //负载均衡
-        "Type": "RoundRobin", //LeastConnection 将请求发往最空闲的那个服务器 RoundRobin 轮流发送 NoLoadBalance 总是发往第一个请求或者是服务发现
+        "Type": "LeastConnection", //LeastConnection 将请求发往最空闲的那个服务器 RoundRobin 轮流发送 NoLoadBalance 总是发往第一个请求或者是服务发现
         "Key": "",
         "Expiry": 0
       },
@@ -121,7 +122,7 @@
       "ServiceName": "ConsulTest"
     }
   ],
-  "Aggregates": [
+  "Aggregates": [//请求聚合
     {
       "RouteKeys": [
         "A",
@@ -135,15 +136,14 @@
     //"BaseUrl": "https://localhost:7770"
     "ServiceDiscoveryProvider": { //Consul服务的配置
       "Scheme": "http",
-      "Host": "10.0.4.49",
-      "Port": 8500,
-      "ConfigurationKey": "Oceolot_A" //存储在Consul上的Key
+      "Host": "localhost",
+      "Port": 8500
 
     },
     "RateLimitOptions": { //全局限流相应配置
       "DisableRateLimitHeaders": false,
-      "QuotaExceededMessage": "网关异常返回", //限流响应返回信息
-      "HttpStatusCode": 999, //限流返回状态码
+      "QuotaExceededMessage": "网关异常返回", //限流、熔断 响应返回信息
+      "HttpStatusCode": 999, //限流、熔断 返回状态码
       "ClientIdHeader": "Test" //客户端请求头 默认是 ClientId
     }
 
