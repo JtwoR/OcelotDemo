@@ -57,8 +57,8 @@ namespace IdentityServer
             //services.AddIdentityServer()
             //    .AddDeveloperSigningCredential()//开发环境(证书问题)
             //    .AddInMemoryApiResources(IdentityServerConfig.ApiResource)
-            //    .AddInMemoryApiScopes(IdentityServerConfig.ApiScope);
-
+            //    .AddInMemoryApiScopes(IdentityServerConfig.ApiScope)
+            //    .AddInMemoryClients(IdentityServerConfig.Client);
 
 
 
