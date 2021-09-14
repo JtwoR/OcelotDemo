@@ -34,11 +34,11 @@ namespace IdentityServer
             //配置写到内存
             services.AddIdentityServer()
                 .AddDeveloperSigningCredential()//开发环境(证书问题)
-                .AddInMemoryApiResources(IdentityServerConfig.ApiResource)
-                .AddInMemoryApiScopes(IdentityServerConfig.ApiScope)
-                .AddInMemoryClients(IdentityServerConfig.Client);
+                .AddInMemoryApiResources(IdentityServerConfig.ApiResource)//资源
+                .AddInMemoryApiScopes(IdentityServerConfig.ApiScope)//范围
+                .AddInMemoryClients(IdentityServerConfig.Client);//客户端
 
-            //配置读取数据库数据
+            #region 配置读取数据库数据
             //var connection = "Server=localhost;Port=3306;User Id=root;Password=123456;Database=identityserver;Max Pool Size = 512;Connect Timeout=600000;charset=utf8mb4;SslMode=None;";
             //services
             //    .AddIdentityServer()
@@ -74,6 +74,7 @@ namespace IdentityServer
 
 
             //var migrationsAssembly = typeof(Startup).GetType().Assembly.GetName().Name;
+            #endregion
 
             #region 授权中心数据库初始化
             //教程:https://www.cnblogs.com/chendongbky/p/12700339.html

@@ -10,7 +10,7 @@
         "Delete",
         "Options"
       ],
-      "Priority": 0,
+      "Priority": 0, //优先级 配了相同的上游模板按优先级 进行分发
       "LoadBalancerOptions": { //负载均衡
         "Type": "RoundRobin", //LeastConnection 将请求发往最空闲的那个服务器 RoundRobin 轮流发送 NoLoadBalance 总是发往第一个请求或者是服务发现
         "Key": "",
@@ -27,7 +27,12 @@
           "Host": "localhost",
           "Port": 7772
         }
-      ]
+      ],
+      //缓存
+      //"FileCacheOptions": {
+      //  "TtlSeconds": 5, //缓存时间（秒）
+      //  "Region": "CacheArea" //缓存区（名称自定义），表示改配置缓存放到哪个区域，可以在配置管理中进行维护
+      //}
     },
 
     //2、服务发现模式
@@ -47,11 +52,13 @@
       },
       "DownstreamPathTemplate": "/api/Consul/{urls}", //下游模板
       "DownstreamScheme": "http",
-      "ServiceName": "ConsulTest",//服务名称
+      "ServiceName": "ConsulTest", //服务名称
+      /*---------------------------授权---------------------------------*/
       "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Gateway",//授权中心key 与注入key需要相同
+        "AuthenticationProviderKey": "Gateway", //授权中心key 与注入key需要相同
         "AllowedScopes": []
       },
+      /*---------------------------授权---------------------------------*/
       /*---------------------------限流---------------------------------*/
       "RateLimitOptions": {
         "ClientWhitelist": [], //白名单

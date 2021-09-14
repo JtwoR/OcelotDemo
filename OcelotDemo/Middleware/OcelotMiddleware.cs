@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Ocelot.Cache.CacheManager;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using Ocelot.Provider.Consul;
@@ -16,10 +17,11 @@ namespace Gateway.Middleware
         public static void AddOcelotMiddleware(this IServiceCollection services) {
 
             services
-                .AddOcelot()
-                .AddConsul()
-                .AddPolly()
-                .AddTransientDefinedAggregator<Aggregator.FakeDefinedAggregator>();
+                .AddOcelot()//网关
+                .AddConsul()//服务发现
+                .AddPolly()//限流熔断
+                .AddCacheManager(x=>x.WithDictionaryHandle())//缓存
+                .AddTransientDefinedAggregator<Aggregator.FakeDefinedAggregator>();//聚合请求
         }
 
         public static void UseOcelotMiddleware(this IApplicationBuilder app)

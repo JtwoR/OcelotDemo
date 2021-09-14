@@ -22,5 +22,11 @@ namespace WebSite_A.Controller
             System.Threading.Thread.Sleep(10000);
             return await Task.FromResult("WebSite_A：/api/Route/GetWait");
         }
+
+        [HttpGet("GetTime")]
+        public async Task<string> GetTime()
+        {
+            return await Task.FromResult(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        }
     }
 }

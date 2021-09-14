@@ -21,7 +21,7 @@ namespace Gateway
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.ConfigureAppConfiguration((app) => { app.AddJsonFile("Configs/ocelot.json"); });
+                    webBuilder.ConfigureAppConfiguration((app) => { app.AddJsonFile("Configs/ocelot.json"); });//Ìí¼ÓÅäÖÃÎÄ¼ş
 
                     webBuilder.UseUrls($"http://{GlobalConfig.Host}:7770");
                     webBuilder.UseStartup<Startup>();

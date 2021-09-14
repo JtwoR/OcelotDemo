@@ -30,10 +30,6 @@ namespace Gateway
             services.AddIdentityserverMiddleware();//配置中心授权校验
             services.AddOcelotMiddleware();//网关中间件
             
-
-            
-
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,9 +45,9 @@ namespace Gateway
 
 
             app.UseIdentityserverMiddleware();//配置中心授权校验
-            app.UseMvc();
             app.UseOcelotMiddleware();//网关中间件
-
+            app.UseMvc();
+            
         }
     }
 }

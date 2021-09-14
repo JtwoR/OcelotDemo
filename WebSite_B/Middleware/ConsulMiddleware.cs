@@ -13,7 +13,7 @@ namespace WebSite_B.Middleware
     {
 
 
-        private static string _serviceName = "ConsulTest";
+        private static string _serviceName = "ConsulTest";//服务名
 
         public static IApplicationBuilder RegisterConsul(this IApplicationBuilder app, IConsulClient client, IHostApplicationLifetime lifetime)
         {
@@ -35,7 +35,7 @@ namespace WebSite_B.Middleware
                 Name = _serviceName,
                 Address = Program.siteInfo.Host,
                 Port = Program.siteInfo.Port,
-                Tags = new[] { $"WebSite_B" }
+                Tags = new[] { $"WebSite_B" }//服务Tag
             };
 
             client.Agent.ServiceRegister(registration).Wait();//服务启动时注册
