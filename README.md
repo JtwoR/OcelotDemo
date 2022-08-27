@@ -8,9 +8,9 @@
 * ### 说明
     ---
     授权中心地址 http://localhost:6999 \
-    网关地址 http://localhost:6999 \
-    下游站点A地址 http://localhost:6999 \
-    下游站点B地址 http://localhost:6999 
+    网关地址 http://localhost:7770 \
+    下游站点A地址 http://localhost:7771 \
+    下游站点B地址 http://localhost:7772 
 
     ---
 
@@ -52,8 +52,8 @@
 * 授权中心获取token
 
     >Post请求\
-    http://localhost:6999/connect/token\
-    body使用x-www-form_urlencoded
+     http://localhost:6999/connect/token \
+     body使用x-www-form_urlencoded
     
     >参数：\
     client_id:client\
