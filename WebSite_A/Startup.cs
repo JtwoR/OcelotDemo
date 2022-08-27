@@ -52,7 +52,7 @@ namespace WebSite_A
             }
 
 
-            app.RegisterConsul(client,lifetime);//consul注册接口
+            //app.RegisterConsul(client,lifetime);//consul注册接口
             //app.UseAuthentication();//配置中心授权校验
             app.UseMvc();
 

@@ -28,6 +28,10 @@
           "Port": 7772
         }
       ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Gateway", //授权中心key 与注入key需要相同
+        "AllowedScopes": []
+      },
       //缓存
       //"FileCacheOptions": {
       //  "TtlSeconds": 5, //缓存时间（秒）
@@ -36,46 +40,46 @@
     },
 
     //2、服务发现模式
-    {
-      "UpstreamPathTemplate": "/api/Consul/{urls}", //上游模板
-      "UpstreamHttpMethod": [
-        "Get",
-        "Post",
-        "Put",
-        "Delete",
-        "Options"
-      ],
-      "LoadBalancerOptions": { //负载均衡
-        "Type": "LeastConnection" //LeastConnection 将请求发往最空闲的那个服务器 RoundRobin 轮流发送 NoLoadBalance 总是发往第一个请求或者是服务发现
-        //"Key": "",
-        //"Expiry": 0
-      },
-      "DownstreamPathTemplate": "/api/Consul/{urls}", //下游模板
-      "DownstreamScheme": "http",
-      "ServiceName": "ConsulTest", //服务名称
-      /*---------------------------授权---------------------------------*/
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Gateway", //授权中心key 与注入key需要相同
-        "AllowedScopes": []
-      },
-      /*---------------------------授权---------------------------------*/
-      /*---------------------------限流---------------------------------*/
-      "RateLimitOptions": {
-        "ClientWhitelist": [], //白名单
-        "EnableRateLimiting": true, //是否启用限流
-        "Period": "1s", //统计时间段：1s, 5m, 1h, 1d
-        "PeriodTimespan": 5, //多少秒之后客户端可以重试
-        "Limit": 1 //在统计时间段内允许的最大请求数量
-      },
-      ///*---------------------------限流---------------------------------*/
-      ///*---------------------------熔断---------------------------------*/
-      "QoSOptions": {
-        "ExceptionsAllowedBeforeBreaking": 1, //允许多少个异常请求
-        "DurationOfBreak": 5, //熔断的时间，单位为秒
-        "TimeoutValue": 5000 // 如果下游请求的处理时间超过多少则自动将请求设置为超时
-      }
-      /*---------------------------熔断---------------------------------*/
-    },
+    //{
+    //  "UpstreamPathTemplate": "/api/Consul/{urls}", //上游模板
+    //  "UpstreamHttpMethod": [
+    //    "Get",
+    //    "Post",
+    //    "Put",
+    //    "Delete",
+    //    "Options"
+    //  ],
+    //  "LoadBalancerOptions": { //负载均衡
+    //    "Type": "LeastConnection" //LeastConnection 将请求发往最空闲的那个服务器 RoundRobin 轮流发送 NoLoadBalance 总是发往第一个请求或者是服务发现
+    //    //"Key": "",
+    //    //"Expiry": 0
+    //  },
+    //  "DownstreamPathTemplate": "/api/Consul/{urls}", //下游模板
+    //  "DownstreamScheme": "http",
+    //  "ServiceName": "ConsulTest", //服务名称
+    //  /*---------------------------授权---------------------------------*/
+    //  "AuthenticationOptions": {
+    //    "AuthenticationProviderKey": "Gateway", //授权中心key 与注入key需要相同
+    //    "AllowedScopes": []
+    //  },
+    //  /*---------------------------授权---------------------------------*/
+    //  /*---------------------------限流---------------------------------*/
+    //  "RateLimitOptions": {
+    //    "ClientWhitelist": [], //白名单
+    //    "EnableRateLimiting": true, //是否启用限流
+    //    "Period": "1s", //统计时间段：1s, 5m, 1h, 1d
+    //    "PeriodTimespan": 5, //多少秒之后客户端可以重试
+    //    "Limit": 1 //在统计时间段内允许的最大请求数量
+    //  },
+    //  ///*---------------------------限流---------------------------------*/
+    //  ///*---------------------------熔断---------------------------------*/
+    //  "QoSOptions": {
+    //    "ExceptionsAllowedBeforeBreaking": 1, //允许多少个异常请求
+    //    "DurationOfBreak": 5, //熔断的时间，单位为秒
+    //    "TimeoutValue": 5000 // 如果下游请求的处理时间超过多少则自动将请求设置为超时
+    //  }
+    //  /*---------------------------熔断---------------------------------*/
+    //},
 
     //3、请求聚合(只支持http get(需要验证))
     {
@@ -126,7 +130,17 @@
       },
       "DownstreamPathTemplate": "/{urls}", //下游模板
       "DownstreamScheme": "http",
-      "ServiceName": "ConsulTest"
+      //"ServiceName": "ConsulTest"
+      "DownstreamHostAndPorts": [ //下游站点host与端口
+        {
+          "Host": "localhost",
+          "Port": 7771
+        },
+        {
+          "Host": "localhost",
+          "Port": 7772
+        }
+      ]
     }
   ],
   "Aggregates": [//请求聚合
@@ -141,12 +155,12 @@
   ],
   "GlobalConfiguration": {
     //"BaseUrl": "https://localhost:7770"
-    "ServiceDiscoveryProvider": { //Consul服务的配置
-      "Scheme": "http",
-      "Host": "localhost",
-      "Port": 8500
+    //"ServiceDiscoveryProvider": { //Consul服务的配置
+    //  "Scheme": "http",
+    //  "Host": "localhost",
+    //  "Port": 8500
 
-    },
+    //},
     "RateLimitOptions": { //全局限流相应配置
       "DisableRateLimitHeaders": false,
       "QuotaExceededMessage": "网关异常返回", //限流、熔断 响应返回信息

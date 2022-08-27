@@ -52,7 +52,7 @@ namespace WebSite_B
             }
 
 
-            app.RegisterConsul(client, lifetime);
+            //app.RegisterConsul(client, lifetime);//consul×¢²á½Ó¿Ú
             //app.UseAuthentication();
             app.UseMvc();
 

@@ -18,7 +18,7 @@ namespace Gateway.Middleware
 
             services
                 .AddOcelot()//网关
-                .AddConsul()//服务发现
+                //.AddConsul()//服务发现
                 .AddPolly()//限流熔断
                 .AddCacheManager(x=>x.WithDictionaryHandle())//缓存
                 .AddTransientDefinedAggregator<Aggregator.FakeDefinedAggregator>();//聚合请求
